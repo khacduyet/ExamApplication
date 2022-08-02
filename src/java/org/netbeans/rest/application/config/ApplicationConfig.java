@@ -29,7 +29,6 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(controller.DemoAPI.class);
         resources.add(webservices.DemoAPI.class);
     }
     

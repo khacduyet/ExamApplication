@@ -26,7 +26,7 @@ public class DemoAPI {
         ddao = new DemoDAO();
     }
     @GET
-    @Path("/")
+    @Path("/danh-sach")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAll(){
         Gson g = new Gson();
