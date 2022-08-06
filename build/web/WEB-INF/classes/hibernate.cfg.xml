@@ -3,9 +3,24 @@
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-    <property name="hibernate.connection.url">jdbc:sqlserver://sql.bsite.net\MSSQL2016;databaseName=khacduyetv1_ExamDb</property>
-    <property name="hibernate.connection.username">khacduyetv1_ExamDb</property>
-    <property name="hibernate.connection.password">123!@#</property>
-    <mapping class="entities.Demo"/>
+    <property name="hibernate.connection.url">jdbc:sqlserver://sql5092.site4now.net;databaseName=db_a8b45e_examapps</property>
+    <property name="hibernate.connection.username">db_a8b45e_examapps_admin</property>
+    <property name="hibernate.connection.password">123456789a@</property>
+    <mapping class="entities.Class"/>
+    <mapping class="entities.Report"/>
+    <mapping class="entities.User"/>
+    <mapping class="entities.Subject"/>
+    <mapping class="entities.RoleDetail"/>
+    <mapping class="entities.Role"/>
+    <mapping class="entities.QuestionItem"/>
+    <mapping class="entities.Question"/>
+    <mapping class="entities.Qa"/>
+    <mapping class="entities.LevelPoint"/>
+    <mapping class="entities.LevelMember"/>
+    <mapping class="entities.HistoryExam"/>
+    <mapping class="entities.Exam"/>
+    <mapping class="entities.DetailLevelMember"/>
+    <mapping class="entities.DetailExam"/>
+    <mapping class="entities.Admin"/>
   </session-factory>
 </hibernate-configuration>
