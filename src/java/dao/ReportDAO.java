@@ -22,6 +22,15 @@ import org.hibernate.Session;
 public class ReportDAO implements ICommon<Report> {
 
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public ReturnMessage getData() {

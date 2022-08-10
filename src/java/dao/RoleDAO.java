@@ -20,6 +20,15 @@ import org.hibernate.Session;
  */
 public class RoleDAO implements ICommon<Role>{
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public DungChung.ReturnMessage getData() {

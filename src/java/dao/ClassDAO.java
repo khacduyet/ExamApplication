@@ -73,14 +73,12 @@ public class ClassDAO implements ICommon<Class> {
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
                 general<Class> c = new general<>();
-                CurrentUser user = new CurrentUser();
                 c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = eState.ADD;
                 msg.setStatus();
             } else {
                 general<Class> c = new general<>();
-                CurrentUser user = new CurrentUser();
                 c.getObject(entity, currentUser, 2);
                 ss.update(entity);
                 msg.status = eState.UPDATE;

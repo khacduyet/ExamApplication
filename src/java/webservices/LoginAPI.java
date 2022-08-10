@@ -9,7 +9,6 @@ import dao.JWT;
 import dao.LoginDAO;
 import dao.UserDAO;
 import entities.Users;
-import javax.annotation.security.PermitAll;
 //import helper.JwtTokenHelper;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -20,7 +19,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.springframework.http.HttpStatus;
 
 /**
  *
@@ -28,7 +26,6 @@ import org.springframework.http.HttpStatus;
  */
 @Stateless
 @Path("/login")
-@PermitAll
 public class LoginAPI {
     UserDAO udao;
     LoginDAO db;

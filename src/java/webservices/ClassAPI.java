@@ -6,12 +6,11 @@
 package webservices;
 
 import com.google.gson.Gson;
-import common.DungChung;
 import common.DungChung.MESSAGE;
 import common.DungChung.ReturnMessage;
 import dao.ClassDAO;
 import dao.IRole;
-import dao.IRole.REQUEST;
+import dao.IRole.LEVEL;
 import entities.Class;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -44,22 +43,17 @@ public class ClassAPI extends BaseAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getAll(@Context HttpHeaders httpHeader) {
-        List<String> auths = httpHeader.getRequestHeader("authorization");
-        if (auths != null) {
-            CurrentUser cu = getCurrentUser(auths.get(0));
-            if (cu != null) {
-                List<String> roles = cu.getRoles();
-                if (IRole.isRole(roles, REQUEST.GET)) {
-                    Gson g = new Gson();
-                    db.setCurrentUser(cu);
-                    String data = g.toJson(db.getData());
-                    return data;
-                }
-                return MESSAGE.NOT_AUTHORIZATION;
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getData());
+                return data;
             }
-            return MESSAGE.NOT_LOGIN;
+            return MESSAGE.NOT_AUTHORIZATION;
         }
-        return MESSAGE.NOT_AUTHORIZATION;
+        return MESSAGE.NOT_LOGIN;
     }
 
     @Path("/{id}")
@@ -67,45 +61,37 @@ public class ClassAPI extends BaseAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.TEXT_PLAIN)
     public String getById(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
-        List<String> auths = httpHeader.getRequestHeader("authorization");
-        if (auths != null) {
-            CurrentUser cu = getCurrentUser(auths.get(0));
-            if (cu != null) {
-                List<String> roles = cu.getRoles();
-                if (IRole.isRole(roles, REQUEST.GET)) {
-                    Gson g = new Gson();
-                    String data = g.toJson(db.getById(id));
-                    return data;
-                }
-                return MESSAGE.NOT_AUTHORIZATION;
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getById(id));
+                return data;
             }
-            return MESSAGE.NOT_LOGIN;
+            return MESSAGE.NOT_AUTHORIZATION;
         }
-        return MESSAGE.NOT_AUTHORIZATION;
+        return MESSAGE.NOT_LOGIN;
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String insert(@Context HttpHeaders httpHeader, String entity) {
-        List<String> auths = httpHeader.getRequestHeader("authorization");
-        if (auths != null) {
-            CurrentUser cu = getCurrentUser(auths.get(0));
-            if (cu != null) {
-                List<String> roles = cu.getRoles();
-                if (IRole.isRole(roles, REQUEST.POST)) {
-                    Gson g = new Gson();
-                    Class p = g.fromJson(entity, Class.class);
-                    db.setCurrentUser(cu);
-                    ReturnMessage msg = db.setData(p);
-                    String data = g.toJson(msg);
-                    return data;
-                }
-                return MESSAGE.NOT_AUTHORIZATION;
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.MEDIUM)) {
+                db.setCurrentUser(cu);
+                Gson g = new Gson();
+                Class p = g.fromJson(entity, Class.class);
+                ReturnMessage msg = db.setData(p);
+                String data = g.toJson(msg);
+                return data;
             }
-            return MESSAGE.NOT_LOGIN;
+            return MESSAGE.NOT_AUTHORIZATION;
         }
-        return MESSAGE.NOT_AUTHORIZATION;
+        return MESSAGE.NOT_LOGIN;
     }
 
     @DELETE
@@ -113,22 +99,18 @@ public class ClassAPI extends BaseAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.TEXT_PLAIN)
     public String delete(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
-        List<String> auths = httpHeader.getRequestHeader("authorization");
-        if (auths != null) {
-            CurrentUser cu = getCurrentUser(auths.get(0));
-            if (cu != null) {
-                List<String> roles = cu.getRoles();
-                if (IRole.isRole(roles, REQUEST.DELETE)) {
-                    Gson g = new Gson();
-                    ReturnMessage msg = db.removeData(id);
-                    String data = g.toJson(msg);
-                    return data;
-                }
-                return MESSAGE.NOT_AUTHORIZATION;
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.MEDIUM)) {
+                Gson g = new Gson();
+                ReturnMessage msg = db.removeData(id);
+                String data = g.toJson(msg);
+                return data;
             }
-            return MESSAGE.NOT_LOGIN;
+            return MESSAGE.NOT_AUTHORIZATION;
         }
-        return MESSAGE.NOT_AUTHORIZATION;
+        return MESSAGE.NOT_LOGIN;
     }
 
 }

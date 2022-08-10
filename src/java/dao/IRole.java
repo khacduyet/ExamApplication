@@ -23,19 +23,19 @@ public abstract class IRole {
     static String ROLES_ALL = String.join(",", _ROLES_ALL);
     static String ROLES_LIMIT = String.join(",", _ROLES_LIMIT);
 
-    public static boolean isRole(List<String> roles, REQUEST req) {
+    public static boolean isRole(List<String> roles, LEVEL req) {
         switch (req) {
-            case GET:
+            case LOW:
                 if (roles.stream().anyMatch((role) -> (ROLES_ALL.contains(role)))) {
                     return true;
                 }
                 break;
-            case POST:
+            case MEDIUM:
                 if (roles.stream().anyMatch((role) -> (ROLES_LIMIT.contains(role)))) {
                     return true;
                 }
                 break;
-            case DELETE:
+            case HIGHT:
                 if (roles.stream().anyMatch((role) -> (ROLES_LIMIT.contains(role)))) {
                     return true;
                 }
@@ -47,6 +47,11 @@ public abstract class IRole {
     public enum ROLE {
 
         ROLE_ADMIN, ROLE_USER, ROLE_TEACHER;
+    }
+
+    public enum LEVEL {
+
+        HIGHT, MEDIUM, LOW
     }
 
     public enum REQUEST {
