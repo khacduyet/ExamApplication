@@ -7,9 +7,15 @@ package webservices;
 
 import com.google.gson.Gson;
 import common.DungChung.ReturnMessage;
+import dao.IRole;
 import dao.UserDAO;
-import entities.User;
+import entities.Users;
+import java.util.Enumeration;
+import java.util.List;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,7 +23,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import model.CurrentUser;
 
 /**
  *
@@ -25,7 +35,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("/user")
-public class UserAPI {
+public class UserAPI extends BaseAPI {
 
     UserDAO db;
 
@@ -35,12 +45,21 @@ public class UserAPI {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAll() {
-        Gson g = new Gson();
-        String data = g.toJson(db.getData());
-        return data;
+    public String getAll(@Context HttpHeaders httpHeader) {
+        List<String> auths = httpHeader.getRequestHeader("authorization");
+        if (auths != null) {
+            CurrentUser cu = getCurrentUser(auths.get(0));
+            if (cu != null) {
+                Gson g = new Gson();
+                db.setCurrentUser(cu);
+                String data = g.toJson(db.getData());
+                return data;
+            }
+            return "Not login!";
+        }
+        return "Not authorization!";
     }
-    
+
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -50,13 +69,13 @@ public class UserAPI {
         String data = g.toJson(db.getById(id));
         return data;
     }
-    
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String insert(String entity) {
         Gson g = new Gson();
-        User p = g.fromJson(entity, User.class);
+        Users p = g.fromJson(entity, Users.class);
         ReturnMessage msg = db.setData(p);
         String data = g.toJson(msg);
         return data;
@@ -72,5 +91,5 @@ public class UserAPI {
         String data = g.toJson(msg);
         return data;
     }
-    
+
 }

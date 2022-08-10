@@ -90,8 +90,8 @@ public class ExamDAO implements ICommon<Exam>{
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             Exam data = (Exam) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();

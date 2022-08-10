@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LevelPoint.findByModifiedBy", query = "SELECT l FROM LevelPoint l WHERE l.modifiedBy = :modifiedBy"),
     @NamedQuery(name = "LevelPoint.findByModifiedByName", query = "SELECT l FROM LevelPoint l WHERE l.modifiedByName = :modifiedByName")})
 public class LevelPoint implements Serializable {
+    @Size(max = 1073741823)
+    @Column(name = "Note")
+    private String note;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -181,6 +184,14 @@ public class LevelPoint implements Serializable {
     @Override
     public String toString() {
         return "entities.LevelPoint[ id=" + id + " ]";
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
     
 }

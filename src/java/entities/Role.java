@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Role.findByModifiedBy", query = "SELECT r FROM Role r WHERE r.modifiedBy = :modifiedBy"),
     @NamedQuery(name = "Role.findByModifiedByName", query = "SELECT r FROM Role r WHERE r.modifiedByName = :modifiedByName")})
 public class Role implements Serializable {
+    @Size(max = 255)
+    @Column(name = "Code")
+    private String code;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -181,6 +184,14 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "entities.Role[ id=" + id + " ]";
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
     
 }

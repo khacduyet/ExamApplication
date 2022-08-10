@@ -37,6 +37,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Class.findByModifiedBy", query = "SELECT c FROM Class c WHERE c.modifiedBy = :modifiedBy"),
     @NamedQuery(name = "Class.findByModifiedByName", query = "SELECT c FROM Class c WHERE c.modifiedByName = :modifiedByName")})
 public class Class implements Serializable {
+    @Size(max = 1073741823)
+    @Column(name = "Course")
+    private String course;
+    @Size(max = 1073741823)
+    @Column(name = "SchoolYear")
+    private String schoolYear;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -181,6 +187,22 @@ public class Class implements Serializable {
     @Override
     public String toString() {
         return "entities.Class[ id=" + id + " ]";
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(String schoolYear) {
+        this.schoolYear = schoolYear;
     }
     
 }

@@ -5,15 +5,10 @@
  */
 package dao;
 
-import common.DungChung.Auditable;
 import common.DungChung.ReturnMessage;
 import common.DungChung.ReturnMessage.eState;
-import common.DungChung.container;
 import common.DungChung.general;
 import entities.Class;
-import entities.User;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
@@ -27,6 +22,15 @@ import org.hibernate.Session;
 public class ClassDAO implements ICommon<Class> {
 
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public ReturnMessage getData() {
@@ -70,14 +74,14 @@ public class ClassDAO implements ICommon<Class> {
                 entity.setId(UUID.randomUUID().toString());
                 general<Class> c = new general<>();
                 CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = eState.ADD;
                 msg.setStatus();
             } else {
                 general<Class> c = new general<>();
                 CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 2);
+                c.getObject(entity, currentUser, 2);
                 ss.update(entity);
                 msg.status = eState.UPDATE;
                 msg.setStatus();

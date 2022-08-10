@@ -8,6 +8,7 @@ package dao;
 import common.DungChung;
 import common.DungChung.general;
 import entities.Question;
+import entities.QuestionItem;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
@@ -18,7 +19,8 @@ import org.hibernate.Session;
  *
  * @author Admin
  */
-public class QuestionDAO implements ICommon<Question>{
+public class QuestionDAO implements ICommon<Question> {
+
     Session ss;
 
     @Override
@@ -60,11 +62,22 @@ public class QuestionDAO implements ICommon<Question>{
             ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             if ("".equals(entity.getId())) {
+                // Question
                 entity.setId(UUID.randomUUID().toString());
                 general<Question> c = new general<>();
                 CurrentUser user = new CurrentUser();
                 c.getObject(entity, user, 1);
                 ss.save(entity);
+                // Question Item
+                List<QuestionItem> items = entity.Items;
+                items.stream().map((item) -> {
+                    item.setId(UUID.randomUUID().toString());
+                    return item;
+                }).forEach((item) -> {
+                    general<QuestionItem> g = new general<>();
+                    g.getObject(item, user, 1);
+                });
+                ss.save(items);
                 msg.status = DungChung.ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
@@ -72,6 +85,18 @@ public class QuestionDAO implements ICommon<Question>{
                 CurrentUser user = new CurrentUser();
                 c.getObject(entity, user, 2);
                 ss.update(entity);
+                List<QuestionItem> itemsOld = getQuesItemByQues(entity.getId());
+                ss.delete(itemsOld);
+                // Question Item
+                List<QuestionItem> items = entity.Items;
+                items.stream().map((item) -> {
+                    item.setId(UUID.randomUUID().toString());
+                    return item;
+                }).forEach((item) -> {
+                    general<QuestionItem> g = new general<>();
+                    g.getObject(item, user, 1);
+                });
+                ss.save(items);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();
             }
@@ -89,8 +114,8 @@ public class QuestionDAO implements ICommon<Question>{
         DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.DELETE);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             Question data = (Question) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();
@@ -101,5 +126,14 @@ public class QuestionDAO implements ICommon<Question>{
         }
         return msg;
     }
-    
+
+    public List<QuestionItem> getQuesItemByQues(String id) {
+        ss = HibernateUtil.getSessionFactory().openSession();
+        Query q = ss.createQuery("from QuestionItem where idQuestion = :idQuestion");
+        q.setParameter("idQuestion", id);
+        List<QuestionItem> data = q.list();
+        ss.close();
+        return data;
+    }
+
 }

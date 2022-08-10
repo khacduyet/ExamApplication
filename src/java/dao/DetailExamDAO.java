@@ -91,8 +91,8 @@ public class DetailExamDAO implements ICommon<DetailExam>{
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.DELETE);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             DetailExam data = (DetailExam) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();

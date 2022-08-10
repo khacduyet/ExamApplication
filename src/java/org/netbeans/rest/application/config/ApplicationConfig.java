@@ -29,15 +29,11 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {        
-        resources.add(webservices.AdminAPI.class);
         resources.add(webservices.ClassAPI.class);
         resources.add(webservices.DetailExamAPI.class);
-        resources.add(webservices.DetailLevelMemberAPI.class);
         resources.add(webservices.ExamAPI.class);
-        resources.add(webservices.HistoryExamAPI.class);
-        resources.add(webservices.LevelMemberAPI.class);
         resources.add(webservices.LevelPointAPI.class);
-        resources.add(webservices.QaAPI.class);
+        resources.add(webservices.LoginAPI.class);
         resources.add(webservices.QuestionAPI.class);
         resources.add(webservices.QuestionItemAPI.class);
         resources.add(webservices.ReportAPI.class);

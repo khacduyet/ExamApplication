@@ -5,7 +5,7 @@
  */
 package webservices;
 
-import javax.ws.rs.core.Cookie;
+import dao.JWT;
 import model.CurrentUser;
 
 /**
@@ -13,9 +13,19 @@ import model.CurrentUser;
  * @author Admin
  */
 public class BaseAPI {
-    public CurrentUser getCurrentUser(){
-        CurrentUser user = new CurrentUser();
-        
+
+    private final JWT jwt;
+
+    public BaseAPI() {
+        jwt = new JWT();
+    }
+
+    public CurrentUser getCurrentUser(String authorization) {
+        CurrentUser user = null;
+        boolean check = jwt.validateTokenLogin(authorization);
+        if (check) {
+            user = jwt.getUserFromToken(authorization);
+        }
         return user;
     }
 }

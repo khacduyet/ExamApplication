@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import common.DungChung.ReturnMessage;
 import dao.RoleDAO;
 import entities.Role;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,6 +27,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("/role")
+@PermitAll
 public class RoleAPI {
 
     RoleDAO db;

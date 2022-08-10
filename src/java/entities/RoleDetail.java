@@ -27,9 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "RoleDetail.findAll", query = "SELECT r FROM RoleDetail r"),
     @NamedQuery(name = "RoleDetail.findById", query = "SELECT r FROM RoleDetail r WHERE r.id = :id"),
-    @NamedQuery(name = "RoleDetail.findByStatus", query = "SELECT r FROM RoleDetail r WHERE r.status = :status"),
     @NamedQuery(name = "RoleDetail.findByIdRole", query = "SELECT r FROM RoleDetail r WHERE r.idRole = :idRole"),
-    @NamedQuery(name = "RoleDetail.findByIdAdmin", query = "SELECT r FROM RoleDetail r WHERE r.idAdmin = :idAdmin"),
     @NamedQuery(name = "RoleDetail.findByCreated", query = "SELECT r FROM RoleDetail r WHERE r.created = :created"),
     @NamedQuery(name = "RoleDetail.findByCreatedBy", query = "SELECT r FROM RoleDetail r WHERE r.createdBy = :createdBy"),
     @NamedQuery(name = "RoleDetail.findByCreatedByName", query = "SELECT r FROM RoleDetail r WHERE r.createdByName = :createdByName"),
@@ -44,14 +42,12 @@ public class RoleDetail implements Serializable {
     @Size(min = 1, max = 36)
     @Column(name = "Id")
     private String id;
-    @Column(name = "Status")
-    private Boolean status;
     @Size(max = 1073741823)
     @Column(name = "IdRole")
     private String idRole;
     @Size(max = 1073741823)
-    @Column(name = "IdAdmin")
-    private String idAdmin;
+    @Column(name = "IdUser")
+    private String idUser;
     @Size(max = 27)
     @Column(name = "Created")
     public String created;
@@ -86,14 +82,6 @@ public class RoleDetail implements Serializable {
         this.id = id;
     }
 
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
     public String getIdRole() {
         return idRole;
     }
@@ -102,12 +90,12 @@ public class RoleDetail implements Serializable {
         this.idRole = idRole;
     }
 
-    public String getIdAdmin() {
-        return idAdmin;
+    public String getIdUser() {
+        return idUser;
     }
 
-    public void setIdAdmin(String idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
     public String getCreated() {
