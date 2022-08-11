@@ -20,6 +20,15 @@ import org.hibernate.Session;
  */
 public class RoleDetailDAO implements ICommon<RoleDetail>{
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public DungChung.ReturnMessage getData() {
@@ -89,8 +98,8 @@ public class RoleDetailDAO implements ICommon<RoleDetail>{
         DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.DELETE);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             RoleDetail data = (RoleDetail) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();

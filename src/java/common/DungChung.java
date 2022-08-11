@@ -5,12 +5,9 @@
  */
 package common;
 
-import com.google.gson.Gson;
-import entities.Class;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.CurrentUser;
@@ -27,7 +24,6 @@ public class DungChung {
         }
 
         public enum eState {
-
             SUCCESS, ERROR, NOTFOUND, ADD,
             UPDATE, DELETE, DUPLICATE, NOTLOGIN
         }
@@ -191,14 +187,16 @@ public class DungChung {
 
     public static class general<T> {
 
-        public void setObject(T entity, Auditable obj) {
+        public void setObject(T entity, Auditable obj, int type) {
             try {
-                Field created = entity.getClass().getField("created");
-                created.set(entity, obj.getCreated());
-                Field createdBy = entity.getClass().getField("createdBy");
-                createdBy.set(entity, obj.getCreatedBy());
-                Field createdByName = entity.getClass().getField("createdByName");
-                createdByName.set(entity, obj.getCreatedByName());
+                if (type == 1) {
+                    Field created = entity.getClass().getField("created");
+                    created.set(entity, obj.getCreated());
+                    Field createdBy = entity.getClass().getField("createdBy");
+                    createdBy.set(entity, obj.getCreatedBy());
+                    Field createdByName = entity.getClass().getField("createdByName");
+                    createdByName.set(entity, obj.getCreatedByName());
+                }
                 Field modified = entity.getClass().getField("modified");
                 modified.set(entity, obj.getModified());
                 Field modifiedBy = entity.getClass().getField("modifiedBy");
@@ -211,12 +209,17 @@ public class DungChung {
         }
 
         public void getObject(T entity, CurrentUser user, int type) {
-            user.setId("2e0e4af8-13fb-11ed-861d-0242ac120002");
-            user.setName("Admin");
+            user.setId(user.getId());
+            user.setName(user.getName());
             Auditable aud = new Auditable();
             aud.isCreateOrUpdate(type, user);
             general<T> c = new general<>();
-            c.setObject(entity, aud);
+            c.setObject(entity, aud, type);
         }
+    }
+    
+    public static class MESSAGE{
+        public static String NOT_AUTHORIZATION = "Not authorization!";
+        public static String NOT_LOGIN = "Not login!";
     }
 }

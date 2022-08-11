@@ -37,6 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Exam.findByModifiedBy", query = "SELECT e FROM Exam e WHERE e.modifiedBy = :modifiedBy"),
     @NamedQuery(name = "Exam.findByModifiedByName", query = "SELECT e FROM Exam e WHERE e.modifiedByName = :modifiedByName")})
 public class Exam implements Serializable {
+    @Column(name = "Timer")
+    private Integer timer;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -181,6 +183,14 @@ public class Exam implements Serializable {
     @Override
     public String toString() {
         return "entities.Exam[ id=" + id + " ]";
+    }
+
+    public Integer getTimer() {
+        return timer;
+    }
+
+    public void setTimer(Integer timer) {
+        this.timer = timer;
     }
     
 }

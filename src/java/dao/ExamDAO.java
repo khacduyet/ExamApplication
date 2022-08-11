@@ -21,6 +21,15 @@ import org.hibernate.Session;
  */
 public class ExamDAO implements ICommon<Exam>{
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public DungChung.ReturnMessage getData() {
@@ -90,8 +99,8 @@ public class ExamDAO implements ICommon<Exam>{
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             Exam data = (Exam) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();

@@ -22,6 +22,15 @@ import org.hibernate.Session;
 public class ReportDAO implements ICommon<Report> {
 
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public ReturnMessage getData() {
@@ -91,8 +100,8 @@ public class ReportDAO implements ICommon<Report> {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.DELETE);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             Report data = (Report) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();

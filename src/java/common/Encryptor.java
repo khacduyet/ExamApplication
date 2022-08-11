@@ -33,11 +33,12 @@ public class Encryptor {
     
     public static boolean DecryptMd5(String inputPassword, String hashPassWord)
             throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(inputPassword.getBytes());
-        byte[] digest = md.digest();
-        String myChecksum = DatatypeConverter
-                .printHexBinary(digest).toUpperCase();
+        String myChecksum = EncryptMd5(inputPassword);
+//        MessageDigest md = MessageDigest.getInstance("MD5");
+//        md.update(inputPassword.getBytes());
+//        byte[] digest = md.digest();
+//        String myChecksum = DatatypeConverter
+//                .printHexBinary(digest).toUpperCase();
         return hashPassWord.equals(myChecksum);
     }
 }

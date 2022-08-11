@@ -20,6 +20,15 @@ import org.hibernate.Session;
  */
 public class QuestionItemDAO implements ICommon<QuestionItem>{
     Session ss;
+    public CurrentUser currentUser;
+
+    public CurrentUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(CurrentUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public DungChung.ReturnMessage getData() {
@@ -89,8 +98,8 @@ public class QuestionItemDAO implements ICommon<QuestionItem>{
         DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.DELETE);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             QuestionItem data = (QuestionItem) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
             ss.getTransaction().commit();
