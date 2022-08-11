@@ -26,7 +26,7 @@ import model.CurrentUser;
 public class JWT {
 
     String SECRET_KEY = "1111111111111111111111111111111111";
-    String EXPIRE_TIME = "86400000"; // Expire date has value 1 day
+    String EXPIRE_TIME = "3600000"; // Expire date has value 1h
 
     public static final String USERNAME = "username";
 
