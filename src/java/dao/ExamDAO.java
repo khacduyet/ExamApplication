@@ -72,15 +72,13 @@ public class ExamDAO implements ICommon<Exam>{
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
                 general<Exam> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
                 general<Exam> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.update(entity);
                 msg.status = ReturnMessage.eState.UPDATE;
                 msg.setStatus();

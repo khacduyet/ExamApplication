@@ -71,15 +71,13 @@ public class SubjectDAO implements ICommon<Subject>{
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
                 general<Subject> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = DungChung.ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
                 general<Subject> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 2);
+                c.getObject(entity, currentUser, 2);
                 ss.update(entity);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();

@@ -32,7 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Question.findByName", query = "SELECT q FROM Question q WHERE q.name = :name"),
     @NamedQuery(name = "Question.findByNote", query = "SELECT q FROM Question q WHERE q.note = :note"),
     @NamedQuery(name = "Question.findByStatus", query = "SELECT q FROM Question q WHERE q.status = :status"),
-    @NamedQuery(name = "Question.findByIdLevelPoint", query = "SELECT q FROM Question q WHERE q.idLevelPoint = :idLevelPoint"),
     @NamedQuery(name = "Question.findByCreated", query = "SELECT q FROM Question q WHERE q.created = :created"),
     @NamedQuery(name = "Question.findByCreatedBy", query = "SELECT q FROM Question q WHERE q.createdBy = :createdBy"),
     @NamedQuery(name = "Question.findByCreatedByName", query = "SELECT q FROM Question q WHERE q.createdByName = :createdByName"),
@@ -40,12 +39,41 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Question.findByModifiedBy", query = "SELECT q FROM Question q WHERE q.modifiedBy = :modifiedBy"),
     @NamedQuery(name = "Question.findByModifiedByName", query = "SELECT q FROM Question q WHERE q.modifiedByName = :modifiedByName")})
 public class Question implements Serializable {
+
     @Size(max = 36)
     @Column(name = "IdLevel")
     private String idLevel;
+    @Transient
+    private String nameLevel;
+
+    public List<QuestionItem> getItems() {
+        return Items;
+    }
+
+    public void setItems(List<QuestionItem> Items) {
+        this.Items = Items;
+    }
     @Size(max = 36)
     @Column(name = "IdSubject")
     private String idSubject;
+    @Transient
+    private String nameSubject; 
+
+    public String getNameLevel() {
+        return nameLevel;
+    }
+
+    public void setNameLevel(String nameLevel) {
+        this.nameLevel = nameLevel;
+    }
+
+    public String getNameSubject() {
+        return nameSubject;
+    }
+
+    public void setNameSubject(String nameSubject) {
+        this.nameSubject = nameSubject;
+    }
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -61,9 +89,6 @@ public class Question implements Serializable {
     private String note;
     @Column(name = "Status")
     private Boolean status;
-    @Size(max = 1073741823)
-    @Column(name = "IdLevelPoint")
-    private String idLevelPoint;
     @Size(max = 27)
     @Column(name = "Created")
     public String created;
@@ -122,14 +147,6 @@ public class Question implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
-    }
-
-    public String getIdLevelPoint() {
-        return idLevelPoint;
-    }
-
-    public void setIdLevelPoint(String idLevelPoint) {
-        this.idLevelPoint = idLevelPoint;
     }
 
     public String getCreated() {
@@ -220,5 +237,5 @@ public class Question implements Serializable {
     public void setIdSubject(String idSubject) {
         this.idSubject = idSubject;
     }
-    
+
 }

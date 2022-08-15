@@ -7,8 +7,10 @@ package dao;
 
 import common.DungChung;
 import common.DungChung.general;
+import entities.LevelPoint;
 import entities.Question;
 import entities.QuestionItem;
+import entities.Subject;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
@@ -40,6 +42,16 @@ public class QuestionDAO implements ICommon<Question> {
             ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("from Question");
             List<Question> data = q.list();
+            data.stream().forEach((ques) -> {
+                Subject s = (Subject) ss.get(Subject.class, ques.getIdSubject());
+                LevelPoint lp = (LevelPoint) ss.get(LevelPoint.class, ques.getIdLevel());
+                if (s != null) {
+                    ques.setNameSubject(s.getName());
+                }
+                if (lp != null) {
+                    ques.setNameLevel(lp.getName());
+                }
+            });
             ss.close();
             msg.data = data;
         } catch (Exception e) {
@@ -55,6 +67,9 @@ public class QuestionDAO implements ICommon<Question> {
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
             Question data = (Question) ss.get(Question.class, id);
+            Query q = ss.createQuery("from QuestionItem where idQuestion = :id order by name asc");
+            q.setParameter("id", data.getId());
+            data.setItems(q.list());
             ss.close();
             msg.data = data;
         } catch (Exception e) {
@@ -74,38 +89,39 @@ public class QuestionDAO implements ICommon<Question> {
                 // Question
                 entity.setId(UUID.randomUUID().toString());
                 general<Question> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 // Question Item
                 List<QuestionItem> items = entity.Items;
                 items.stream().map((item) -> {
                     item.setId(UUID.randomUUID().toString());
+                    item.setIdQuestion(entity.getId());
                     return item;
                 }).forEach((item) -> {
                     general<QuestionItem> g = new general<>();
-                    g.getObject(item, user, 1);
+                    g.getObject(item, currentUser, 1);
+                    ss.save(item);
                 });
-                ss.save(items);
                 msg.status = DungChung.ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
                 general<Question> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 2);
+                c.getObject(entity, currentUser, 2);
                 ss.update(entity);
-                List<QuestionItem> itemsOld = getQuesItemByQues(entity.getId());
-                ss.delete(itemsOld);
+                Query q = ss.createQuery("DELETE from QuestionItem where idQuestion = :id");
+                q.setParameter("id", entity.getId());
+                q.executeUpdate();
                 // Question Item
                 List<QuestionItem> items = entity.Items;
                 items.stream().map((item) -> {
                     item.setId(UUID.randomUUID().toString());
+                    item.setIdQuestion(entity.getId());
                     return item;
                 }).forEach((item) -> {
                     general<QuestionItem> g = new general<>();
-                    g.getObject(item, user, 1);
+                    g.getObject(item, currentUser, 1);
+                    ss.save(item);
                 });
-                ss.save(items);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();
             }
@@ -127,6 +143,9 @@ public class QuestionDAO implements ICommon<Question> {
             ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
+            Query q = ss.createQuery("DELETE from QuestionItem where idQuestion = :id");
+            q.setParameter("id", id);
+            q.executeUpdate();
             ss.getTransaction().commit();
             ss.close();
             msg.data = id;
@@ -141,7 +160,6 @@ public class QuestionDAO implements ICommon<Question> {
         Query q = ss.createQuery("from QuestionItem where idQuestion = :idQuestion");
         q.setParameter("idQuestion", id);
         List<QuestionItem> data = q.list();
-        ss.close();
         return data;
     }
 
