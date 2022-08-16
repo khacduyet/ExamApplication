@@ -35,14 +35,14 @@ public class UserDAO implements ICommon<Users> {
     public void setCurrentUser(CurrentUser currentUser) {
         this.currentUser = currentUser;
     }
-    
+
     @Override
     public DungChung.ReturnMessage getData() {
         DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.SUCCESS);
         msg.setStatus();
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Query q = ss.createQuery("from Users");
+            Query q = ss.createQuery("from Users order by created desc");
             List<Users> data = q.list();
             ss.close();
             msg.data = data;
@@ -80,17 +80,41 @@ public class UserDAO implements ICommon<Users> {
                 c.getObject(entity, currentUser, 1);
                 entity.setPassword(Encryptor.EncryptMd5(entity.getPassword()));
                 ss.save(entity);
+
+                // Get Role
+                Query q = ss.createQuery("from Role where code = :code");
+                q.setParameter("code", IRole.ROLE_USER);
+                List<Role> data = q.list();
+                // Set Role Detail
+                if (data != null) {
+                    RoleDetail rd = new RoleDetail();
+                    rd.setId(UUID.randomUUID().toString());
+                    rd.setIdRole(data.get(0).getId());
+                    rd.setIdUser(entity.getId());
+                    general<RoleDetail> rdBy = new general<>();
+                    rdBy.getObject(rd, currentUser, 1);
+                    ss.save(rd);
+                }
                 msg.status = DungChung.ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
+                Users data = (Users) ss.get(Users.class, entity.getId());
                 general<Users> c = new general<>();
                 c.getObject(entity, currentUser, 2);
-                entity.setPassword(Encryptor.EncryptMd5(entity.getPassword()));
-                ss.update(entity);
+                data.setName(entity.getName());
+                data.setEmail(entity.getEmail());
+                data.setAge(entity.getAge());
+                data.setVillage(entity.getVillage());
+                data.setDob(entity.getDob());
+                data.setModified(entity.getModified());
+                data.setModifiedBy(entity.getModifiedBy());
+                data.setModifiedByName(entity.getModifiedByName());
+                ss.update(data);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();
             }
             ss.getTransaction().commit();
+
             ss.close();
             msg.data = entity;
         } catch (Exception e) {
@@ -104,10 +128,14 @@ public class UserDAO implements ICommon<Users> {
         DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.DELETE);
         msg.setStatus();
         try {
-            ss = HibernateUtil.getSessionFactory().openSession();
             Users data = (Users) this.getById(id).data;
+            ss = HibernateUtil.getSessionFactory().openSession();
             ss.beginTransaction();
             ss.delete(data);
+            // Get Role
+            Query q = ss.createQuery("DELETE from RoleDetail where idUser = :id");
+            q.setParameter("id", data.getId());
+            q.executeUpdate();
             ss.getTransaction().commit();
             ss.close();
             msg.data = id;
@@ -116,7 +144,7 @@ public class UserDAO implements ICommon<Users> {
         }
         return msg;
     }
-    
+
     public Users loadUserByUsername(String username) {
         ss = HibernateUtil.getSessionFactory().openSession();
         Users user = (Users) ss.get(Users.class, username);
