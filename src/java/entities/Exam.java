@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -72,6 +74,27 @@ public class Exam implements Serializable {
     @Size(max = 200)
     @Column(name = "ModifiedByName")
     public String modifiedByName;
+    @Transient
+    public List<String> questions;
+    @Transient
+    public String idSubject;
+
+    public String getIdSubject() {
+        return idSubject;
+    }
+
+    public void setIdSubject(String idSubject) {
+        this.idSubject = idSubject;
+    }
+    
+
+    public List<String> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<String> questions) {
+        this.questions = questions;
+    }
 
     public Exam() {
     }

@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {        
         resources.add(webservices.ClassAPI.class);
+        resources.add(webservices.ContestAPI.class);
         resources.add(webservices.DetailExamAPI.class);
         resources.add(webservices.ExamAPI.class);
         resources.add(webservices.LevelPointAPI.class);
