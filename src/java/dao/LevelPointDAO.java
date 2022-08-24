@@ -36,7 +36,7 @@ public class LevelPointDAO implements ICommon<LevelPoint>{
         msg.setStatus();
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Query q = ss.createQuery("from LevelPoint");
+            Query q = ss.createQuery("from LevelPoint order by point asc");
             List<LevelPoint> data = q.list();
             ss.close();
             msg.data = data;
@@ -71,15 +71,13 @@ public class LevelPointDAO implements ICommon<LevelPoint>{
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
                 general<LevelPoint> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = DungChung.ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
                 general<LevelPoint> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 2);
+                c.getObject(entity, currentUser, 2);
                 ss.update(entity);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();

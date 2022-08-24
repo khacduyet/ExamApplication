@@ -71,15 +71,13 @@ public class RoleDetailDAO implements ICommon<RoleDetail>{
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
                 general<RoleDetail> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = DungChung.ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
                 general<RoleDetail> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 2);
+                c.getObject(entity, currentUser, 2);
                 ss.update(entity);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();

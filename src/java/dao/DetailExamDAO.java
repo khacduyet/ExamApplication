@@ -73,15 +73,13 @@ public class DetailExamDAO implements ICommon<DetailExam>{
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
                 general<DetailExam> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 1);
+                c.getObject(entity, currentUser, 1);
                 ss.save(entity);
                 msg.status = ReturnMessage.eState.ADD;
                 msg.setStatus();
             } else {
                 general<DetailExam> c = new general<>();
-                CurrentUser user = new CurrentUser();
-                c.getObject(entity, user, 2);
+                c.getObject(entity, currentUser, 2);
                 ss.update(entity);
                 msg.status = ReturnMessage.eState.UPDATE;
                 msg.setStatus();
