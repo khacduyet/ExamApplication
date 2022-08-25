@@ -109,6 +109,7 @@ public class UserDAO implements ICommon<Users> {
                 data.setModified(entity.getModified());
                 data.setModifiedBy(entity.getModifiedBy());
                 data.setModifiedByName(entity.getModifiedByName());
+                data.setIdClass(entity.getIdClass());
                 ss.update(data);
                 msg.status = DungChung.ReturnMessage.eState.UPDATE;
                 msg.setStatus();
