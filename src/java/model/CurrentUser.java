@@ -17,6 +17,15 @@ public class CurrentUser {
     public String passWord;
     public String email;
     public String name;
+    public String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
     public int age;
     public boolean status;
     public String authorization;
