@@ -8,10 +8,10 @@ package webservices;
 import com.google.gson.Gson;
 import common.DungChung.MESSAGE;
 import common.DungChung.ReturnMessage;
-import dao.ExamDAO;
+import dao.ContestDAO;
 import dao.IRole;
 import dao.IRole.LEVEL;
-import entities.Exam;
+import entities.Contest;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -31,13 +31,13 @@ import model.CurrentUser;
  * @author Admin
  */
 @Stateless
-@Path("/exam")
-public class ExamAPI extends BaseAPI {
+@Path("/contest")
+public class ContestAPI extends BaseAPI {
 
-    ExamDAO db;
+    ContestDAO db;
 
-    public ExamAPI() {
-        db = new ExamDAO();
+    public ContestAPI() {
+        db = new ContestDAO();
     }
 
     @GET
@@ -54,7 +54,6 @@ public class ExamAPI extends BaseAPI {
             return MESSAGE.NOT_AUTHORIZATION;
         }
         return MESSAGE.NOT_LOGIN;
-
     }
 
     @Path("/{id}")
@@ -75,42 +74,6 @@ public class ExamAPI extends BaseAPI {
         return MESSAGE.NOT_LOGIN;
     }
 
-    @Path("/subject/{id}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String getByIdSubject(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
-        CurrentUser cu = getCurrentUser(httpHeader);
-        if (cu != null) {
-            List<String> roles = cu.getRoles();
-            if (IRole.isRole(roles, LEVEL.LOW)) {
-                Gson g = new Gson();
-                String data = g.toJson(db.getDataByIdSubject(id));
-                return data;
-            }
-            return MESSAGE.NOT_AUTHORIZATION;
-        }
-        return MESSAGE.NOT_LOGIN;
-    }
-    
-    @Path("/subject_exam/{id}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String getExamByIdSubject(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
-        CurrentUser cu = getCurrentUser(httpHeader);
-        if (cu != null) {
-            List<String> roles = cu.getRoles();
-            if (IRole.isRole(roles, LEVEL.LOW)) {
-                Gson g = new Gson();
-                String data = g.toJson(db.getExamByIdSubject(id));
-                return data;
-            }
-            return MESSAGE.NOT_AUTHORIZATION;
-        }
-        return MESSAGE.NOT_LOGIN;
-    }
-
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -121,7 +84,7 @@ public class ExamAPI extends BaseAPI {
             if (IRole.isRole(roles, LEVEL.MEDIUM)) {
                 db.setCurrentUser(cu);
                 Gson g = new Gson();
-                Exam p = g.fromJson(entity, Exam.class);
+                Contest p = g.fromJson(entity, Contest.class);
                 ReturnMessage msg = db.setData(p);
                 String data = g.toJson(msg);
                 return data;

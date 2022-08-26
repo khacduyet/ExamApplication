@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DetailExam.findAll", query = "SELECT d FROM DetailExam d"),
     @NamedQuery(name = "DetailExam.findById", query = "SELECT d FROM DetailExam d WHERE d.id = :id"),
-    @NamedQuery(name = "DetailExam.findByStatus", query = "SELECT d FROM DetailExam d WHERE d.status = :status"),
     @NamedQuery(name = "DetailExam.findByIdExam", query = "SELECT d FROM DetailExam d WHERE d.idExam = :idExam"),
     @NamedQuery(name = "DetailExam.findByIdQuestion", query = "SELECT d FROM DetailExam d WHERE d.idQuestion = :idQuestion"),
     @NamedQuery(name = "DetailExam.findByCreated", query = "SELECT d FROM DetailExam d WHERE d.created = :created"),
@@ -44,8 +43,6 @@ public class DetailExam implements Serializable {
     @Size(min = 1, max = 36)
     @Column(name = "Id")
     private String id;
-    @Column(name = "Status")
-    private Boolean status;
     @Size(max = 1073741823)
     @Column(name = "IdExam")
     private String idExam;
@@ -84,14 +81,6 @@ public class DetailExam implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
     }
 
     public String getIdExam() {

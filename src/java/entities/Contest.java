@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -40,6 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Contest.findByModifiedBy", query = "SELECT c FROM Contest c WHERE c.modifiedBy = :modifiedBy"),
     @NamedQuery(name = "Contest.findByModifiedByName", query = "SELECT c FROM Contest c WHERE c.modifiedByName = :modifiedByName")})
 public class Contest implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -81,6 +83,26 @@ public class Contest implements Serializable {
     @Size(max = 200)
     @Column(name = "ModifiedByName")
     public String modifiedByName;
+    @Transient
+    public String idExam;
+    @Transient
+    public String nameExam;
+
+    public String getIdExam() {
+        return idExam;
+    }
+
+    public void setIdExam(String idExam) {
+        this.idExam = idExam;
+    }
+
+    public String getNameExam() {
+        return nameExam;
+    }
+
+    public void setNameExam(String nameExam) {
+        this.nameExam = nameExam;
+    }
 
     public Contest() {
     }
@@ -217,5 +239,5 @@ public class Contest implements Serializable {
     public String toString() {
         return "entities.Contest[ id=" + id + " ]";
     }
-    
+
 }
