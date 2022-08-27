@@ -114,7 +114,7 @@ public class ContestAPI extends BaseAPI {
     @Path("/finishedExam")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     public String finishedExam(@Context HttpHeaders httpHeader, String entity) {
         CurrentUser cu = getCurrentUser(httpHeader);
         if (cu != null) {
