@@ -25,7 +25,8 @@ public class DungChung {
 
         public enum eState {
             SUCCESS, ERROR, NOTFOUND, ADD,
-            UPDATE, DELETE, DUPLICATE, NOTLOGIN
+            UPDATE, DELETE, DUPLICATE, NOTLOGIN,
+            FINISHED
         }
         public String message;
         public Object data;
@@ -76,6 +77,9 @@ public class DungChung {
                     break;
                 case NOTLOGIN:
                     this.message = "Not login!";
+                    break;
+                case FINISHED:
+                    this.message = "Successfully submitted!";
                     break;
             }
         }

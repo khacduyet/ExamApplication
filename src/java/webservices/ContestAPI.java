@@ -12,6 +12,7 @@ import dao.ContestDAO;
 import dao.IRole;
 import dao.IRole.LEVEL;
 import entities.Contest;
+import entities.ResultExam;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -67,6 +68,63 @@ public class ContestAPI extends BaseAPI {
             if (IRole.isRole(roles, LEVEL.LOW)) {
                 Gson g = new Gson();
                 String data = g.toJson(db.getById(id));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
+
+    @Path("/contest_user/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String getContestByUser(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getContestByUser(id));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
+
+    @Path("/get_exam/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String getQuestionByIdContest(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getQuestionByIdContest(id));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
+
+    @Path("/finishedExam")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String finishedExam(@Context HttpHeaders httpHeader, String entity) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                db.setCurrentUser(cu);
+                Gson g = new Gson();
+                ResultExam p = g.fromJson(entity, ResultExam.class);
+                ReturnMessage msg = db.finishedExam(p);
+                String data = g.toJson(msg);
                 return data;
             }
             return MESSAGE.NOT_AUTHORIZATION;

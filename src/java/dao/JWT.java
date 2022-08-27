@@ -39,6 +39,7 @@ public class JWT {
             builder.claim("id", user.getId());
             builder.claim("name", user.getName());
             builder.claim("password", user.getPassword());
+            builder.claim("image", user.getImage());
             builder.claim("roles", user.getRoles());
             builder.expirationTime(generateExpirationDate());
             JWTClaimsSet claimsSet = builder.build();
@@ -86,6 +87,7 @@ public class JWT {
             user.setId((String) claims.getClaim("id"));
             user.setName((String) claims.getClaim("name"));
             user.setPassWord((String) claims.getClaim("password"));
+            user.setImage((String) claims.getClaim("image"));
             user.setRoles((List<String>) claims.getClaim("roles"));
         } catch (Exception e) {
             e.printStackTrace();

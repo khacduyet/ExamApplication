@@ -14,7 +14,13 @@ import entities.ContestClass;
 import entities.ContestUser;
 import entities.DetailContestExam;
 import entities.DetailExam;
+import entities.Exam;
+import entities.LevelPoint;
+import entities.Question;
+import entities.QuestionItem;
+import entities.ResultExam;
 import entities.Users;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
@@ -65,6 +71,95 @@ public class ContestDAO implements ICommon<Contest> {
             r.setIdExam(dce.getIdExam());
             ss.close();
             msg.data = r;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
+    public ReturnMessage getContestByUser(String idUser) {
+        ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            Query q = ss.createQuery("from ContestUser where idUser = :idUser").setParameter("idUser", idUser);
+            List<ContestUser> cu = q.list();
+            List<String> idContests = new ArrayList<>();
+            for (ContestUser c : cu) {
+                idContests.add(c.getIdContest());
+            }
+            List<Contest> contests = new ArrayList<>();
+            for (String idContest : idContests) {
+                contests.add((Contest) ss.get(Contest.class, idContest));
+            }
+            ss.close();
+            msg.data = contests;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
+    public ReturnMessage getQuestionByIdContest(String idContest) {
+        ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            Query qExam = ss.createQuery("select dce.idExam from DetailContestExam as dce where dce.idContest = :idContest").setParameter("idContest", idContest);
+            String idExam = (String) qExam.list().get(0);
+            Query qDetailQues = ss.createQuery("SELECT de.idQuestion FROM DetailExam as de where idExam = :idExam").setParameter("idExam", idExam);
+            List<String> detailExams = qDetailQues.list();
+            List<Question> questions = new ArrayList<>();
+            for (String de : detailExams) {
+                Question q = (Question) ss.get(Question.class, de);
+                q.Items = ss.createQuery("from QuestionItem where idQuestion = :idQuestion").setParameter("idQuestion", de).list();
+                questions.add(q);
+            }
+            ss.close();
+            msg.data = questions;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
+    public ReturnMessage finishedExam(ResultExam re) {
+        ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.FINISHED);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            ss.beginTransaction();
+            float point = 0;
+            List<String> correcteds = new ArrayList<>();
+            for (String ans : re.getIdAnswer()) {
+                QuestionItem qi = (QuestionItem) ss.get(QuestionItem.class, ans);
+                if (qi.getIsTrue()) {
+                    Question q = (Question) ss.get(Question.class, qi.getIdQuestion());
+                    correcteds.add(q.getId());
+                    LevelPoint lp = (LevelPoint) ss.get(LevelPoint.class, q.getIdLevel());
+                    point += lp.getPoint();
+                }
+            }
+            String corrected = String.join(",", correcteds);
+            re.setCorrected(corrected);
+            re.setPoint(point);
+            Query detailContest = ss.createQuery("select idExam from DetailContestExam where idContest = :idContest ").setParameter("idContest", re.getIdContest());
+            Exam e = (Exam) detailContest.list().get(0);
+            re.setIdExam(e.getId());
+            Query qQuestions = ss.createQuery("select q.idLevel from DetailExam as de inner join Question as q on de.idQuestion = q.id where de.idExam = :idExam").setParameter("idExam", e.getId());
+            List<String> idLevels = qQuestions.list();
+            float score = 0;
+            for (String idLevel : idLevels) {
+                LevelPoint lp = (LevelPoint) ss.get(LevelPoint.class, idLevel);
+                score += lp.getPoint();
+            }
+            re.setScore(score + "");
+            general<ResultExam> dceObj = new general<>();
+            dceObj.getObject(re, currentUser, 1);
+            ss.save(re);
+            ss.getTransaction().commit();
+            ss.close();
+            msg.data = null;
         } catch (Exception e) {
             msg.setError("Error " + e.toString());
         }
