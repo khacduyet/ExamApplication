@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
+import model.ReturnResult;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -133,20 +134,22 @@ public class ContestDAO implements ICommon<Contest> {
             List<String> correcteds = new ArrayList<>();
             for (String ans : re.getIdAnswer()) {
                 QuestionItem qi = (QuestionItem) ss.get(QuestionItem.class, ans);
-                if (qi.getIsTrue()) {
-                    Question q = (Question) ss.get(Question.class, qi.getIdQuestion());
-                    correcteds.add(q.getId());
-                    LevelPoint lp = (LevelPoint) ss.get(LevelPoint.class, q.getIdLevel());
-                    point += lp.getPoint();
+                if (qi != null) {
+                    if (qi.getIsTrue()) {
+                        Question q = (Question) ss.get(Question.class, qi.getIdQuestion());
+                        correcteds.add(q.getId());
+                        LevelPoint lp = (LevelPoint) ss.get(LevelPoint.class, q.getIdLevel());
+                        point += lp.getPoint();
+                    }
                 }
             }
             String corrected = String.join(",", correcteds);
             re.setCorrected(corrected);
             re.setPoint(point);
             Query detailContest = ss.createQuery("select idExam from DetailContestExam where idContest = :idContest ").setParameter("idContest", re.getIdContest());
-            Exam e = (Exam) detailContest.list().get(0);
-            re.setIdExam(e.getId());
-            Query qQuestions = ss.createQuery("select q.idLevel from DetailExam as de inner join Question as q on de.idQuestion = q.id where de.idExam = :idExam").setParameter("idExam", e.getId());
+            String e = (String) detailContest.list().get(0);
+            re.setIdExam(e);
+            Query qQuestions = ss.createQuery("select q.idLevel from DetailExam de, Question q where de.idQuestion = q.id and de.idExam = :idExam").setParameter("idExam", e);
             List<String> idLevels = qQuestions.list();
             float score = 0;
             for (String idLevel : idLevels) {
@@ -155,11 +158,20 @@ public class ContestDAO implements ICommon<Contest> {
             }
             re.setScore(score + "");
             general<ResultExam> dceObj = new general<>();
+            re.setId(UUID.randomUUID().toString());
             dceObj.getObject(re, currentUser, 1);
             ss.save(re);
+            ReturnResult rr = new ReturnResult();
+            rr.setContest((Contest) ss.get(Contest.class, re.getIdContest()));
+            rr.setExam((Exam) ss.get(Exam.class, re.getIdExam()));
+            rr.setUser((Users) ss.get(Users.class, re.getIdUser()));
+            rr.setMinuted(re.getMinuted() != null ? re.getMinuted() : 0);
+            rr.setScore(Double.parseDouble(re.getScore()));
+            rr.setPoint(re.getPoint());
+            rr.setCorrected(correcteds.size());
             ss.getTransaction().commit();
             ss.close();
-            msg.data = null;
+            msg.data = rr;
         } catch (Exception e) {
             msg.setError("Error " + e.toString());
         }
