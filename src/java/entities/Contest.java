@@ -87,6 +87,17 @@ public class Contest implements Serializable {
     public String idExam;
     @Transient
     public String nameExam;
+    @Transient
+    public String nameClass;
+
+    public String getNameClass() {
+        return nameClass;
+    }
+
+    public void setNameClass(String nameClass) {
+        this.nameClass = nameClass;
+    }
+    
 
     public String getIdExam() {
         return idExam;

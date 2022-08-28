@@ -19,6 +19,7 @@ import entities.LevelPoint;
 import entities.Question;
 import entities.QuestionItem;
 import entities.ResultExam;
+import entities.Subject;
 import entities.Users;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,6 +166,9 @@ public class ContestDAO implements ICommon<Contest> {
             rr.setContest((Contest) ss.get(Contest.class, re.getIdContest()));
             rr.setExam((Exam) ss.get(Exam.class, re.getIdExam()));
             rr.setUser((Users) ss.get(Users.class, re.getIdUser()));
+            rr.setSubject((Subject) ss.get(Subject.class, rr.getContest().getIdSubject()));
+            entities.Class cl = (entities.Class) ss.get(entities.Class.class, rr.getContest().getIdClass());
+            rr.getContest().setClassName(cl.getClassName());
             rr.setMinuted(re.getMinuted() != null ? re.getMinuted() : 0);
             rr.setScore(Double.parseDouble(re.getScore()));
             rr.setPoint(re.getPoint());
