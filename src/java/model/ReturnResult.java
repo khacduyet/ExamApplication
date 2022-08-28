@@ -7,6 +7,7 @@ package model;
 
 import entities.Contest;
 import entities.Exam;
+import entities.Subject;
 import entities.Users;
 
 /**
@@ -14,10 +15,21 @@ import entities.Users;
  * @author Admin
  */
 public class ReturnResult {
+
     private double point;
     private Exam exam;
     private Users user;
     private Contest contest;
+    private Subject subject;
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
     private int minuted;
     private int corrected;
     private double score;
@@ -77,5 +89,5 @@ public class ReturnResult {
     public void setScore(double score) {
         this.score = score;
     }
-    
+
 }
