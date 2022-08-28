@@ -89,6 +89,17 @@ public class Contest implements Serializable {
     public String nameExam;
     @Transient
     public String nameClass;
+    @Transient
+    public boolean isPassed;
+
+    public boolean isIsPassed() {
+        return isPassed;
+    }
+
+    public void setIsPassed(boolean isPassed) {
+        this.isPassed = isPassed;
+    }
+    
 
     public String getNameClass() {
         return nameClass;

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -73,6 +74,16 @@ public class Role implements Serializable {
     @Size(max = 200)
     @Column(name = "ModifiedByName")
     public String modifiedByName;
+    @Transient
+    public boolean isValid;
+
+    public boolean isIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(boolean isValid) {
+        this.isValid = isValid;
+    }
 
     public Role() {
     }
