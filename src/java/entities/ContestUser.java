@@ -49,6 +49,7 @@ public class ContestUser implements Serializable {
     @Size(max = 36)
     @Column(name = "IdUser")
     private String idUser;
+    private boolean isPassed;
     @Size(max = 27)
     @Column(name = "Created")
     public String created;
@@ -67,6 +68,15 @@ public class ContestUser implements Serializable {
     @Size(max = 200)
     @Column(name = "ModifiedByName")
     public String modifiedByName;
+
+    public boolean isIsPassed() {
+        return isPassed;
+    }
+
+    public void setIsPassed(boolean isPassed) {
+        this.isPassed = isPassed;
+    }
+    
 
     public ContestUser() {
     }

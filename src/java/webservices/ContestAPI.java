@@ -93,6 +93,41 @@ public class ContestAPI extends BaseAPI {
         return MESSAGE.NOT_LOGIN;
     }
 
+    @Path("/result_exam")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getListResultExam(@Context HttpHeaders httpHeader) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getListResultExam(cu));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
+
+    @Path("/result_exam/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String getResultExam(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getResultExam(id));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
+
     @Path("/get_exam/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -103,7 +138,25 @@ public class ContestAPI extends BaseAPI {
             List<String> roles = cu.getRoles();
             if (IRole.isRole(roles, LEVEL.LOW)) {
                 Gson g = new Gson();
-                String data = g.toJson(db.getQuestionByIdContest(id));
+                String data = g.toJson(db.getQuestionByIdContest(id, cu.getId()));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
+
+    @Path("/check_exam/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String checkIsPassed(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.checkIsPassed(id, cu.getId()));
                 return data;
             }
             return MESSAGE.NOT_AUTHORIZATION;

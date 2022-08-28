@@ -57,7 +57,22 @@ public class RoleAPI extends BaseAPI {
             return MESSAGE.NOT_AUTHORIZATION;
         }
         return MESSAGE.NOT_LOGIN;
-
+    }
+    @Path("/user_role/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getRoleUser(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getData(cu, id));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
     }
 
     @Path("/{id}")

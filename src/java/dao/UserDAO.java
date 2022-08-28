@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
+import model.ModelRole;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -44,6 +45,33 @@ public class UserDAO implements ICommon<Users> {
             ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("from Users order by created desc");
             List<Users> data = q.list();
+            ss.close();
+            msg.data = data;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
+    public DungChung.ReturnMessage getData(CurrentUser cu) {
+        DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            Query q = ss.createQuery("from Users order by created desc");
+            List<Users> users = q.list();
+            List<Users> data = new ArrayList<>();
+            for (Users user : users) {
+                Query qRD = ss.createQuery("from RoleDetail where idUser = :idUser").setParameter("idUser", user.getId());
+                RoleDetail rd = (RoleDetail) qRD.list().get(0);
+                Query qR = ss.createQuery("from Role where id = :idRole").setParameter("idRole", rd.getIdRole());
+                Role r = (Role) qR.list().get(0);
+                if (r.getCode().equals("ROLE_USER")) {
+                    data.add(user);
+                } else if (r.getCode().equals("ROLE_TEACHER") && cu.getRoles().get(0).equals("ROLE_ADMIN")) {
+                    data.add(user);
+                }
+            }
             ss.close();
             msg.data = data;
         } catch (Exception e) {
@@ -116,6 +144,29 @@ public class UserDAO implements ICommon<Users> {
             }
             ss.getTransaction().commit();
 
+            ss.close();
+            msg.data = entity;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
+    public DungChung.ReturnMessage setDataRole(ModelRole entity) {
+        DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            ss.beginTransaction();
+            Query q = ss.createQuery("from RoleDetail where idUser = :idUser").setParameter("idUser", entity.getIdUser());
+            RoleDetail rd = (RoleDetail) q.list().get(0);
+            general<RoleDetail> c = new general<>();
+            c.getObject(rd, currentUser, 2);
+            rd.setIdRole(entity.getIdRole());
+            ss.update(rd);
+            msg.status = DungChung.ReturnMessage.eState.UPDATE;
+            msg.setStatus();
+            ss.getTransaction().commit();
             ss.close();
             msg.data = entity;
         } catch (Exception e) {

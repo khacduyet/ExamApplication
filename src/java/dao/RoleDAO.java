@@ -8,6 +8,8 @@ package dao;
 import common.DungChung;
 import common.DungChung.general;
 import entities.Role;
+import entities.RoleDetail;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
@@ -18,7 +20,8 @@ import org.hibernate.Session;
  *
  * @author Admin
  */
-public class RoleDAO implements ICommon<Role>{
+public class RoleDAO implements ICommon<Role> {
+
     Session ss;
     public CurrentUser currentUser;
 
@@ -38,6 +41,37 @@ public class RoleDAO implements ICommon<Role>{
             ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("from Role");
             List<Role> data = q.list();
+            ss.close();
+            msg.data = data;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
+    public DungChung.ReturnMessage getData(CurrentUser cu, String idUser) {
+        DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            Query qRD = ss.createQuery("from RoleDetail where idUser = :idUser").setParameter("idUser", idUser);
+            RoleDetail rd = (RoleDetail) qRD.list().get(0);
+            
+            List<Role> data = null;
+            if (cu.getRoles().get(0).equals("ROLE_ADMIN")) {
+                Query q = ss.createQuery("from Role");
+                data = q.list();
+            } else {
+                Query q = ss.createQuery("from Role where code = 'ROLE_USER'");
+                data = q.list();
+            }
+            for (Role d : data) {
+                if (rd.getIdRole().equals(d.getId())){
+                    d.setIsValid(true);
+                } else {
+                    d.setIsValid(false);
+                }
+            }
             ss.close();
             msg.data = data;
         } catch (Exception e) {
@@ -108,5 +142,5 @@ public class RoleDAO implements ICommon<Role>{
         }
         return msg;
     }
-    
+
 }

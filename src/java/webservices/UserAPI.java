@@ -24,6 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import model.CurrentUser;
+import model.ModelRole;
 
 /**
  *
@@ -47,7 +48,7 @@ public class UserAPI extends BaseAPI {
             List<String> roles = cu.getRoles();
             if (IRole.isRole(roles, IRole.LEVEL.LOW)) {
                 Gson g = new Gson();
-                String data = g.toJson(db.getData());
+                String data = g.toJson(db.getData(cu));
                 return data;
             }
             return DungChung.MESSAGE.NOT_AUTHORIZATION;
@@ -86,6 +87,27 @@ public class UserAPI extends BaseAPI {
                 Gson g = new Gson();
                 Users p = g.fromJson(entity, Users.class);
                 ReturnMessage msg = db.setData(p);
+                String data = g.toJson(msg);
+                return data;
+            }
+            return DungChung.MESSAGE.NOT_AUTHORIZATION;
+        }
+        return DungChung.MESSAGE.NOT_LOGIN;
+    }
+
+    @POST
+    @Path("/assign_role")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String assignRole(@Context HttpHeaders httpHeader, String entity) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, IRole.LEVEL.MEDIUM)) {
+                db.setCurrentUser(cu);
+                Gson g = new Gson();
+                ModelRole p = g.fromJson(entity, ModelRole.class);
+                ReturnMessage msg = db.setDataRole(p);
                 String data = g.toJson(msg);
                 return data;
             }
