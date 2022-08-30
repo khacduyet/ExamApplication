@@ -5,6 +5,7 @@
  */
 package webservices;
 
+import com.google.gson.Gson;
 import dao.JWT;
 import dao.LoginDAO;
 import dao.UserDAO;
@@ -48,18 +49,20 @@ public class LoginAPI {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response checkPassword(Users user) {
+    public String checkPassword(String user) {
         String result = "";
         try {
-            if (db.CheckLogin(user)) {
-                Users u = udao.getRoleByUsername(user.getUsername());
+            Gson g = new Gson();
+            Users us = g.fromJson(user, Users.class);
+            if (db.CheckLogin(us)) {
+                Users u = udao.getRoleByUsername(us.getUsername());
                 result = jwt.generateTokenLogin(u);
             } else {
                 result = "Wrong userId and password";
             }
         } catch (Exception ex) {
-            return Response.serverError().build();
+            return "Exception: " + ex.toString();
         }
-        return Response.ok(result).build();
+        return result;
     }
 }

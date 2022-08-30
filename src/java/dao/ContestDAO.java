@@ -86,7 +86,7 @@ public class ContestDAO implements ICommon<Contest> {
         msg.setStatus();
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            boolean isLimit = cu.getRoles().contains("ROLE_USER");
+            boolean isLimit = cu.getRoles().contains("ROLE_USER") || cu.getRoles().contains("ROLE_TEACHER");
             List<ResultExam> res = null;
             if (isLimit) {
                 Query q = ss.createQuery("from ResultExam where idUser = :idUser").setParameter("idUser", cu.getId());

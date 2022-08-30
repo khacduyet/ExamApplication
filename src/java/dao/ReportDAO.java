@@ -9,6 +9,7 @@ import common.DungChung.ReturnMessage;
 import common.DungChung.ReturnMessage.eState;
 import common.DungChung.general;
 import entities.Report;
+import entities.Users;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
@@ -40,6 +41,13 @@ public class ReportDAO implements ICommon<Report> {
             ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("from Report");
             List<Report> data = q.list();
+            data.forEach((report) -> {
+                Users u = (Users) ss.get(Users.class, report.getIdUser());
+                if (u != null) {
+                    report.setNameUser(u.getName());
+                    report.setEmailUser(u.getEmail());
+                }
+            });
             ss.close();
             msg.data = data;
         } catch (Exception e) {
