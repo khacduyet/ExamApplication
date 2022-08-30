@@ -7,10 +7,15 @@ package dao;
 
 import common.DungChung;
 import common.DungChung.general;
+import entities.Contest;
+import entities.ResultExam;
 import entities.Subject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import model.CurrentUser;
+import model.ModelChartClass;
+import model.ModelChartSubject;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -18,7 +23,8 @@ import org.hibernate.Session;
  *
  * @author Admin
  */
-public class SubjectDAO implements ICommon<Subject>{
+public class SubjectDAO implements ICommon<Subject> {
+
     Session ss;
     public CurrentUser currentUser;
 
@@ -108,5 +114,44 @@ public class SubjectDAO implements ICommon<Subject>{
         }
         return msg;
     }
-    
+
+    public DungChung.ReturnMessage getChart(String idSubject) {
+        DungChung.ReturnMessage msg = new DungChung.ReturnMessage(DungChung.ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            List<ResultExam> re = null;
+            if (idSubject.equals("null") || idSubject.isEmpty() || idSubject.equals("0")) {
+                re = ss.createQuery("from ResultExam").list();
+            } else {
+                re = ss.createQuery("select re from ResultExam re, Contest c where re.idContest = c.id and c.idSubject = :idSubject").setParameter("idSubject", idSubject).list();
+            }
+            ModelChartSubject mcs = new ModelChartSubject();
+            int weak = 0;
+            int medium = 0;
+            int aboveAvg = 0;
+            int good = 0;
+            for (ResultExam c : re) {
+                if (c.getPoint() < 5) {
+                    weak++;
+                } else if (c.getPoint() < 8) {
+                    medium++;
+                } else if (c.getPoint() < 15) {
+                    aboveAvg++;
+                } else {
+                    good++;
+                }
+            }
+            mcs.setWeak(weak);
+            mcs.setMedium(medium);
+            mcs.setAboveAvg(aboveAvg);
+            mcs.setGood(good);
+            mcs.setTotal(mcs.getWeak() + mcs.getMedium() + mcs.getAboveAvg() + mcs.getGood());
+            ss.close();
+            msg.data = mcs;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
 }
