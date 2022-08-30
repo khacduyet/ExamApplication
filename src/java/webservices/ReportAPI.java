@@ -48,7 +48,7 @@ public class ReportAPI extends BaseAPI {
             List<String> roles = cu.getRoles();
             if (IRole.isRole(roles, LEVEL.LOW)) {
                 Gson g = new Gson();
-                String data = g.toJson(db.getData());
+                String data = g.toJson(db.getData(cu));
                 return data;
             }
             return MESSAGE.NOT_AUTHORIZATION;
@@ -83,10 +83,11 @@ public class ReportAPI extends BaseAPI {
         CurrentUser cu = getCurrentUser(httpHeader);
         if (cu != null) {
             List<String> roles = cu.getRoles();
-            if (IRole.isRole(roles, LEVEL.MEDIUM)) {
+            if (IRole.isRole(roles, LEVEL.LOW)) {
                 db.setCurrentUser(cu);
                 Gson g = new Gson();
                 Report p = g.fromJson(entity, Report.class);
+                p.setIdUser(cu.getId());
                 ReturnMessage msg = db.setData(p);
                 String data = g.toJson(msg);
                 return data;
