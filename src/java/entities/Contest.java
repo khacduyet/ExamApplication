@@ -88,7 +88,18 @@ public class Contest implements Serializable {
     @Transient
     public String nameExam;
     @Transient
+    public String subjectName;
+    @Transient
     public String nameClass;
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+    
     @Transient
     public boolean isPassed;
 
