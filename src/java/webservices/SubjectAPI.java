@@ -75,6 +75,24 @@ public class SubjectAPI extends BaseAPI {
         return MESSAGE.NOT_LOGIN;
 
     }
+    
+    @Path("chart/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String getChart(@Context HttpHeaders httpHeader, @PathParam("id") String id) {
+        CurrentUser cu = getCurrentUser(httpHeader);
+        if (cu != null) {
+            List<String> roles = cu.getRoles();
+            if (IRole.isRole(roles, LEVEL.LOW)) {
+                Gson g = new Gson();
+                String data = g.toJson(db.getChart(id));
+                return data;
+            }
+            return MESSAGE.NOT_AUTHORIZATION;
+        }
+        return MESSAGE.NOT_LOGIN;
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
