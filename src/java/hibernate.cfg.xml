@@ -3,9 +3,9 @@
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-    <property name="hibernate.connection.url">jdbc:sqlserver://sql5092.site4now.net;databaseName=db_a8b45e_examapps</property>
-    <property name="hibernate.connection.username">db_a8b45e_examapps_admin</property>
-    <property name="hibernate.connection.password">123456789a@</property>
+    <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-INNQGHI\MSSQLSERVER12;databaseName=db_a8b45e_examapps</property>
+    <property name="hibernate.connection.username">sa</property>
+    <property name="hibernate.connection.password">1234!@#$</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <mapping class="entities.Class"/>
     <mapping class="entities.Contest"/>

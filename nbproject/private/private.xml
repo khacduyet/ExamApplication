@@ -8,6 +8,8 @@
             <file>file:/D:/Project/ExamApplication/src/java/dao/JWT.java</file>
             <file>file:/D:/Project/ExamApplication/src/java/entities/RoleDetail.java</file>
             <file>file:/D:/Project/ExamApplication/src/java/entities/Users.java</file>
+            <file>file:/D:/Project/ExamApplication/src/java/dao/ExamDAO.java</file>
+            <file>file:/D:/Project/ExamApplication/src/java/dao/SubjectDAO.java</file>
         </group>
     </open-files>
 </project-private>

@@ -20,71 +20,11 @@
                     <file>${file.reference.jersey-client-1.9.1.jar}</file>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.jersey-core-1.9.1.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.sqljdbc4-2.0.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-api-0.11.5.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-impl-0.11.5.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-jackson-0.11.5.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-core-5.6.2.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-crypto-5.6.2.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-jwt-1.1.1.RELEASE.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.nimbus-jose-jwt-9.23.jar}</file>
-                </library>
-                <library dirs="200">
                     <file>${libs.spring-framework400.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.spring-security-config-5.6.2.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-web-5.6.2.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-0.6.0.jar}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-api-0.11.5.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-impl-0.11.5.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jjwt-jackson-0.11.5.jar-1}</file>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.nimbus-jose-jwt-9.23.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-config-5.6.2.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-core-5.6.2.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-crypto-5.6.2.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-jwt-1.1.1.RELEASE.jar-1}</file>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.spring-security-web-5.6.2.jar-1}</file>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.nimbus-jose-jwt-9.23.jar-2}</file>
@@ -92,6 +32,10 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.gson-2.8.2.jar-1}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.hibernate4-support.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>

@@ -26,16 +26,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "Report")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Report.findAll", query = "SELECT r FROM Report r"),
-    @NamedQuery(name = "Report.findById", query = "SELECT r FROM Report r WHERE r.id = :id"),
-    @NamedQuery(name = "Report.findByIdUser", query = "SELECT r FROM Report r WHERE r.idUser = :idUser"),
-    @NamedQuery(name = "Report.findByCreated", query = "SELECT r FROM Report r WHERE r.created = :created"),
-    @NamedQuery(name = "Report.findByCreatedBy", query = "SELECT r FROM Report r WHERE r.createdBy = :createdBy"),
-    @NamedQuery(name = "Report.findByCreatedByName", query = "SELECT r FROM Report r WHERE r.createdByName = :createdByName"),
-    @NamedQuery(name = "Report.findByModified", query = "SELECT r FROM Report r WHERE r.modified = :modified"),
-    @NamedQuery(name = "Report.findByModifiedBy", query = "SELECT r FROM Report r WHERE r.modifiedBy = :modifiedBy"),
+    @NamedQuery(name = "Report.findAll", query = "SELECT r FROM Report r")
+    ,
+    @NamedQuery(name = "Report.findById", query = "SELECT r FROM Report r WHERE r.id = :id")
+    ,
+    @NamedQuery(name = "Report.findByIdUser", query = "SELECT r FROM Report r WHERE r.idUser = :idUser")
+    ,
+    @NamedQuery(name = "Report.findByCreated", query = "SELECT r FROM Report r WHERE r.created = :created")
+    ,
+    @NamedQuery(name = "Report.findByCreatedBy", query = "SELECT r FROM Report r WHERE r.createdBy = :createdBy")
+    ,
+    @NamedQuery(name = "Report.findByCreatedByName", query = "SELECT r FROM Report r WHERE r.createdByName = :createdByName")
+    ,
+    @NamedQuery(name = "Report.findByModified", query = "SELECT r FROM Report r WHERE r.modified = :modified")
+    ,
+    @NamedQuery(name = "Report.findByModifiedBy", query = "SELECT r FROM Report r WHERE r.modifiedBy = :modifiedBy")
+    ,
     @NamedQuery(name = "Report.findByModifiedByName", query = "SELECT r FROM Report r WHERE r.modifiedByName = :modifiedByName")})
 public class Report implements Serializable {
+
     @Size(max = 1073741823)
     @Column(name = "Content")
     private String content;
@@ -48,16 +57,15 @@ public class Report implements Serializable {
     @Size(min = 1, max = 36)
     @Column(name = "Id")
     private String id;
-    
-   
+
     @Size(max = 1073741823)
     @Column(name = "IdUser")
     private String idUser;
     @Transient
     private String nameUser;
-    
-     @Transient
-     private String emailUser;
+
+    @Transient
+    private String emailUser;
 
     public String getEmailUser() {
         return emailUser;
@@ -66,7 +74,6 @@ public class Report implements Serializable {
     public void setEmailUser(String emailUser) {
         this.emailUser = emailUser;
     }
-     
 
     public String getNameUser() {
         return nameUser;
@@ -205,5 +212,5 @@ public class Report implements Serializable {
     public void setStatus(Boolean status) {
         this.status = status;
     }
-    
+
 }

@@ -56,6 +56,34 @@ public class ReportDAO implements ICommon<Report> {
         return msg;
     }
 
+    public ReturnMessage getData(CurrentUser cu) {
+        ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
+        msg.setStatus();
+        try {
+            ss = HibernateUtil.getSessionFactory().openSession();
+            List<Report> data = null;
+            if (cu.getRoles().get(0).equals("ROLE_USER")) {
+                Query q = ss.createQuery("from Report where idUser = :idUser").setParameter("idUser", cu.getId());
+                data = q.list();
+            } else {
+                Query q = ss.createQuery("from Report");
+                data = q.list();
+            }
+            data.forEach((report) -> {
+                Users u = (Users) ss.get(Users.class, report.getIdUser());
+                if (u != null) {
+                    report.setNameUser(u.getName());
+                    report.setEmailUser(u.getEmail());
+                }
+            });
+            ss.close();
+            msg.data = data;
+        } catch (Exception e) {
+            msg.setError("Error " + e.toString());
+        }
+        return msg;
+    }
+
     @Override
     public ReturnMessage getById(String id) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
@@ -80,6 +108,7 @@ public class ReportDAO implements ICommon<Report> {
             ss.beginTransaction();
             if ("".equals(entity.getId())) {
                 entity.setId(UUID.randomUUID().toString());
+                entity.setStatus(Boolean.FALSE);
                 general<Report> c = new general<>();
                 c.getObject(entity, currentUser, 1);
                 ss.save(entity);

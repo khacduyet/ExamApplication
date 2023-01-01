@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+    <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-INNQGHI/MSSQLSERVER12;databaseName=db_a8b45e_examapps</property>
+    <property name="hibernate.connection.username">sa</property>
+    <property name="hibernate.connection.password">1234!@#$</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <mapping class="entities.Class"/>
+    <mapping class="entities.Contest"/>
+    <mapping class="entities.ContestClass"/>
+    <mapping class="entities.ContestUser"/>
+    <mapping class="entities.DetailContestExam"/>
+    <mapping class="entities.DetailExam"/>
+    <mapping class="entities.Exam"/>
+    <mapping class="entities.LevelPoint"/>
+    <mapping class="entities.Question"/>
+    <mapping class="entities.QuestionItem"/>
+    <mapping class="entities.Report"/>
+    <mapping class="entities.ResultExam"/>
+    <mapping class="entities.Role"/>
+    <mapping class="entities.RoleDetail"/>
+    <mapping class="entities.Subject"/>
+    <mapping class="entities.Users"/>
+  </session-factory>
+</hibernate-configuration>

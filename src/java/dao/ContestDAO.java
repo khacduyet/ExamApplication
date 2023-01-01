@@ -21,7 +21,9 @@ import entities.QuestionItem;
 import entities.ResultExam;
 import entities.Subject;
 import entities.Users;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,18 +38,18 @@ import org.hibernate.Session;
  * @author Admin
  */
 public class ContestDAO implements ICommon<Contest> {
-
+    
     Session ss;
     public CurrentUser currentUser;
-
+    
     public CurrentUser getCurrentUser() {
         return currentUser;
     }
-
+    
     public void setCurrentUser(CurrentUser currentUser) {
         this.currentUser = currentUser;
     }
-
+    
     @Override
     public ReturnMessage getData() {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
@@ -56,6 +58,12 @@ public class ContestDAO implements ICommon<Contest> {
             ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("from Contest");
             List<Contest> c = q.list();
+            for (Contest contest : c) {
+                Subject subject = (Subject) ss.get(Subject.class, contest.getIdSubject());
+                if (subject != null) {
+                    contest.setSubjectName(subject.getName());
+                }
+            }
             ss.close();
             msg.data = c;
         } catch (Exception e) {
@@ -63,7 +71,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     @Override
     public ReturnMessage getById(String id) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
@@ -80,7 +88,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     public ReturnMessage getListResultExam(CurrentUser cu) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
@@ -111,14 +119,14 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     public ReturnMessage getResultExam(String id) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
             ResultExam re = (ResultExam) ss.get(ResultExam.class, id);
-
+            
             ReturnResult rr = new ReturnResult();
             rr.setContest((Contest) ss.get(Contest.class, re.getIdContest()));
             rr.setExam((Exam) ss.get(Exam.class, re.getIdExam()));
@@ -138,12 +146,13 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     public ReturnMessage getContestByUser(String idUser) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Query q = ss.createQuery("from ContestUser where idUser = :idUser").setParameter("idUser", idUser);
             List<ContestUser> cu = q.list();
             List<String> idContests = new ArrayList<>();
@@ -156,7 +165,9 @@ public class ContestDAO implements ICommon<Contest> {
             for (String idContest : idContests) {
                 Contest con = (Contest) ss.get(Contest.class, idContest);
                 con.setIsPassed(dictionary.get(idContest));
-                if (!con.isPassed) {
+                Date d = sdf.parse(con.getTestDate());
+                Date now = new Date();
+                if (!con.isPassed && d.getTime() >= now.getTime() ) {
                     contests.add(con);
                 }
             }
@@ -167,7 +178,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     public ReturnMessage getQuestionByIdContest(String idContest, String idUser) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
@@ -196,7 +207,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     public ReturnMessage checkIsPassed(String idContest, String idUser) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
         msg.setStatus();
@@ -211,7 +222,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     public ReturnMessage finishedExam(ResultExam re) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.FINISHED);
         msg.setStatus();
@@ -268,7 +279,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     @Override
     public ReturnMessage setData(Contest entity) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.SUCCESS);
@@ -319,7 +330,7 @@ public class ContestDAO implements ICommon<Contest> {
                 general<Contest> c = new general<>();
                 c.getObject(entity, currentUser, 2);
                 ss.update(entity);
-
+                
                 List<DetailContestExam> dceOld = ss.createQuery("from DetailContestExam where idContest = :idContest").setParameter("idContest", entity.getId()).list();
                 List<ContestClass> ccOld = ss.createQuery("from ContestClass where idContest = :idContest").setParameter("idContest", entity.getId()).list();
                 List<ContestUser> cuOld = ss.createQuery("from ContestUser where idContest = :idContest").setParameter("idContest", entity.getId()).list();
@@ -364,7 +375,7 @@ public class ContestDAO implements ICommon<Contest> {
                     cuObj.getObject(cu, currentUser, 1);
                     ss.save(cu);
                 }
-
+                
                 msg.status = eState.UPDATE;
                 msg.setStatus();
             }
@@ -376,7 +387,7 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
     @Override
     public ReturnMessage removeData(String id) {
         ReturnMessage msg = new ReturnMessage(ReturnMessage.eState.DELETE);
@@ -400,5 +411,5 @@ public class ContestDAO implements ICommon<Contest> {
         }
         return msg;
     }
-
+    
 }
